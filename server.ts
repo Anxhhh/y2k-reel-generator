@@ -402,18 +402,26 @@ app.get('/api/projects/:projectId/zip', (req, res) => {
 // Serve temp ZIP directories
 app.use('/temp', express.static(TEMP_DIR));
 
-// Fallback HTML page for root endpoint (Vite production build folder could be served here)
-app.get('*', (req, res) => {
-  res.send(`
-    <html>
-      <head><title>Y2K Reel Maker API</title></head>
-      <body style="font-family: monospace; background: #000; color: #fff; padding: 40px;">
-        <h2>Y2K Reel Maker Rendering Service</h2>
-        <p>This is the Express backend for compositing and encoding. Connect via the Vite dev server.</p>
-      </body>
-    </html>
-  `);
-});
+// Fallback HTML page / Static Client Serving
+const DIST_DIR = path.resolve('./dist');
+if (fs.existsSync(DIST_DIR)) {
+  app.use(express.static(DIST_DIR));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(DIST_DIR, 'index.html'));
+  });
+} else {
+  app.get('*', (req, res) => {
+    res.send(`
+      <html>
+        <head><title>Y2K Reel Maker API</title></head>
+        <body style="font-family: monospace; background: #000; color: #fff; padding: 40px;">
+          <h2>Y2K Reel Maker Rendering Service</h2>
+          <p>This is the Express backend for compositing and encoding. Connect via the Vite dev server.</p>
+        </body>
+      </html>
+    `);
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`==================================================`);

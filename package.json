@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite\" \"tsx server.ts\"",
-    "build": "vite build",
+    "build": "vite build && npx remotion bundle src/compositions/index.tsx build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "server-typecheck": "tsc -p tsconfig.server.json --noEmit",

@@ -10,6 +10,7 @@ coverage
 dist/
 dist-ssr/
 *.local
+build/
 
 # Editor configs
 .vscode/*

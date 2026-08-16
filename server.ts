@@ -61,6 +61,10 @@ const upload = multer({
 // Programmatic Remotion bundle caching
 let bundleLoc: string | null = null;
 const getBundle = async () => {
+  const precompiledPath = path.resolve('./build');
+  if (fs.existsSync(precompiledPath)) {
+    return precompiledPath;
+  }
   if (!bundleLoc) {
     console.log('[Remotion] Compiling composition bundle...');
     const entry = path.resolve('./src/compositions/index.tsx');

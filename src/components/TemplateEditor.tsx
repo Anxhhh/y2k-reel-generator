@@ -362,7 +362,11 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                       <div className="photo-card-name" style={{ fontSize: '7px' }}>{photo.name}</div>
 
                       {job && (
-                        <span className={`photo-card-status ${job.status}`} style={{ fontSize: '7px', padding: '1px' }}>
+                        <span 
+                          className={`photo-card-status ${job.status}`} 
+                          style={{ fontSize: '7px', padding: '1px' }}
+                          title={job.error}
+                        >
                           {job.status === 'rendering' ? `${job.progress}%` : job.status === 'completed' ? 'DONE' : 'FAIL'}
                         </span>
                       )}

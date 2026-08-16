@@ -181,7 +181,7 @@ const processQueue = async () => {
       muted: true,
       imageFormat: 'jpeg',
       jpegQuality: 80,
-      concurrency: Math.max(1, os.cpus().length),
+      concurrency: process.env.PORT ? 1 : Math.max(1, os.cpus().length),
       inputProps,
       onProgress: ({ progress }) => {
         const percent = Math.min(Math.round(progress * 100), 99);

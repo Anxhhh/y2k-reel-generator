@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Production builds
+dist/
+dist-ssr/
+*.local
+
+# Editor configs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Uploaded and rendered video/image assets
+public/uploads/*
+!public/uploads/.gitkeep
+public/renders/*
+!public/renders/.gitkeep
+temp/
+public/temp/
+*.mp4
+*.zip
+*.mov

@@ -9,8 +9,16 @@ import { renderMedia, selectComposition, getVideoMetadata } from '@remotion/rend
 import { bundle } from '@remotion/bundler';
 import { RenderJob } from './src/types';
 
+// ── 512 MB RAM budget guard ───────────────────────────────────────────────
+// Cap Node.js heap at 384 MB, leaving ~128 MB headroom for Chromium + OS
+if (process.env.PORT) {
+  const v8 = await import('v8');
+  v8.default.setFlagsFromString('--max-old-space-size=384');
+}
+// ──────────────────────────────────────────────────────────────────────────
+
 const app = express();
-const PORT = 5001;
+const PORT = parseInt(process.env.PORT || '5001', 10);
 
 // Enable CORS and JSON parsing
 app.use(cors());
@@ -184,12 +192,15 @@ const processQueue = async () => {
       serveUrl,
       outputLocation: outputPath,
       codec: 'h264',
-      // Explicitly disable audio so the H.264 file is completely silent without audio tracks
       audioCodec: undefined,
       muted: true,
+      // Lower JPEG quality to reduce per-frame memory footprint
       imageFormat: 'jpeg',
-      jpegQuality: 80,
-      concurrency: process.env.PORT ? 1 : Math.max(1, os.cpus().length),
+      jpegQuality: process.env.PORT ? 60 : 80,
+      // Always 1 thread in production — Chromium itself is the bottleneck
+      concurrency: 1,
+      // Cap resolution to 720p-equivalent in production to halve VRAM usage
+      scale: process.env.PORT ? 0.667 : 1,
       inputProps,
       onProgress: ({ progress }) => {
         const percent = Math.min(Math.round(progress * 100), 99);

@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/y2k-reel-generator/' : '/',
+export default defineConfig({
+  base: '',
   plugins: [react()],
   server: {
     port: 3000,
@@ -25,4 +25,4 @@ export default defineConfig(({ command }) => ({
       },
     },
   },
-}));
+});

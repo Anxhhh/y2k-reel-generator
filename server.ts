@@ -132,11 +132,17 @@ const processQueue = async () => {
   try {
     const bundlePath = await getBundle();
 
+    const localPhotoUrl = photoUrl.startsWith('http')
+      ? photoUrl
+      : `http://127.0.0.1:${PORT}/uploads/${path.basename(photoUrl)}`;
+
+    const localTemplateSource = templateConfig.templateSource.startsWith('http')
+      ? templateConfig.templateSource
+      : `http://127.0.0.1:${PORT}/uploads/${path.basename(templateConfig.templateSource)}`;
+
     const inputProps = {
-      photoUrl,
-      templateSource: templateConfig.templateSource.startsWith('http')
-        ? templateConfig.templateSource
-        : `http://localhost:${PORT}/uploads/${path.basename(templateConfig.templateSource)}`,
+      photoUrl: localPhotoUrl,
+      templateSource: localTemplateSource,
       templateType: templateConfig.templateType,
       photoRegion: templateConfig.photoRegion,
       templateRegion: templateConfig.templateRegion,

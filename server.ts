@@ -33,6 +33,10 @@ app.use('/uploads', express.static(UPLOADS_DIR));
 app.use('/renders', express.static(RENDERS_DIR));
 app.use(express.static(PUBLIC_DIR));
 
+// Serve precompiled Remotion bundle statically if present
+const REMOTION_BUILD_DIR = path.resolve('./build');
+app.use('/remotion-bundle', express.static(REMOTION_BUILD_DIR));
+
 // Configure Multer for file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -131,6 +135,10 @@ const processQueue = async () => {
 
   try {
     const bundlePath = await getBundle();
+    const isDirectory = fs.statSync(bundlePath).isDirectory();
+    const serveUrl = isDirectory 
+      ? `http://127.0.0.1:${PORT}/remotion-bundle` 
+      : bundlePath;
 
     const localPhotoUrl = photoUrl.startsWith('http')
       ? photoUrl
@@ -160,7 +168,7 @@ const processQueue = async () => {
 
     // Select the composition to compile
     const composition = await selectComposition({
-      serveUrl: bundlePath,
+      serveUrl,
       id: 'Y2KReel',
       inputProps,
     });
@@ -173,7 +181,7 @@ const processQueue = async () => {
 
     await renderMedia({
       composition,
-      serveUrl: bundlePath,
+      serveUrl,
       outputLocation: outputPath,
       codec: 'h264',
       // Explicitly disable audio so the H.264 file is completely silent without audio tracks

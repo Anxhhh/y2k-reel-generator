@@ -169,7 +169,10 @@ const processQueue = async () => {
       templateXOffset: templateConfig.templateXOffset || 0,
     };
 
-    const fps = templateConfig.fps || 30;
+    // In production, cap FPS at 15 — halves total frames to render
+    // (biggest single speed improvement on a throttled vCPU)
+    const rawFps = templateConfig.fps || 30;
+    const fps = process.env.PORT ? Math.min(rawFps, 15) : rawFps;
     const durationInFrames = Math.round((templateConfig.durationSeconds || 5) * fps);
 
     console.log(`[Renderer] Starting render job ${jobId} for photo: ${photoName}`);
@@ -194,13 +197,13 @@ const processQueue = async () => {
       codec: 'h264',
       audioCodec: undefined,
       muted: true,
-      // Lower JPEG quality to reduce per-frame memory footprint
       imageFormat: 'jpeg',
       jpegQuality: process.env.PORT ? 60 : 80,
-      // Always 1 thread in production — Chromium itself is the bottleneck
       concurrency: 1,
-      // Cap resolution to 720p-equivalent in production to halve VRAM usage
       scale: process.env.PORT ? 0.667 : 1,
+      // swangle = pure-software WebGL — prevents Chromium hunting for
+      // non-existent GPU on cloud VMs which causes massive stall timeouts
+      chromiumOptions: process.env.PORT ? { gl: 'swangle' } : {},
       inputProps,
       onProgress: ({ progress }) => {
         const percent = Math.min(Math.round(progress * 100), 99);

@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "server-typecheck": "tsc -p tsconfig.server.json --noEmit"
+    "server-typecheck": "tsc -p tsconfig.server.json --noEmit",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.220",
@@ -32,6 +34,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
     "concurrently": "^8.2.2",
+    "gh-pages": "^6.3.0",
     "tsx": "^4.11.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.11"

@@ -185,7 +185,7 @@ const processQueue = async () => {
       jobId,
       'completed',
       100,
-      `http://localhost:${PORT}/renders/${path.basename(outputPath)}`
+      `/renders/${path.basename(outputPath)}`
     );
   } catch (err: any) {
     console.error(`[Renderer] Render failed for job ${jobId}:`, err);
@@ -202,7 +202,7 @@ app.post('/api/upload-template', upload.single('template'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No template file provided' });
   }
-  const fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+  const fileUrl = `/uploads/${req.file.filename}`;
   res.json({
     filePath: req.file.path,
     filename: req.file.filename,
@@ -220,7 +220,7 @@ app.post('/api/upload-photos', upload.array('photos', 200), (req, res) => {
   const uploaded = files.map((file) => ({
     id: `photo_${Date.now()}_${Math.round(Math.random() * 1e5)}`,
     name: file.originalname,
-    url: `http://localhost:${PORT}/uploads/${file.filename}`,
+    url: `/uploads/${file.filename}`,
     path: file.path,
   }));
 
